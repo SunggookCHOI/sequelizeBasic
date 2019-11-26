@@ -1,12 +1,6 @@
 import express from 'express'
-import { Model, Sequelize, DataTypes } from 'sequelize/types';
-
-class People extends Model{
-    public id !: number;
-    public name !: string;
-    public hobby !: string;
-    public readonly created !: Date;
-}
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import People from '../models/friend'
 
 const sequelize = new Sequelize('mysql://root:root1234@localhost:3306/people');
 
@@ -24,3 +18,10 @@ People.init({
         sequelize,
         tableName: 'people'
 });
+async function addPeople(name:string, hobby: string){
+    const newPeople = await People.create({
+        name : name,
+        hobby : hobby,
+    });
+    console.log(name+' 님 추가 완료')
+}
