@@ -4,6 +4,7 @@ PI keys and secrets
 # Dependency directory
 node_modules
 bower_components
+config
 
 # Editors
 .idea
