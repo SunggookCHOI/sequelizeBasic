@@ -19,41 +19,48 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
 const friend_1 = __importDefault(require("../models/friend"));
 const DB = __importStar(require("../models/index"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const mysql = DB.init();
-function test() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const newPeople = yield friend_1.default.create({
-            name: '남세영',
-            hobby: '독서'
-        });
-        console.log('입력 완료');
+const app = express_1.default();
+app.use(body_parser_1.default.json());
+app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const temp = yield friend_1.default.findAll({
+        attributes: ['name', 'hobby'],
+        raw: true
+    }).then(function () {
+        console.log(arguments);
+        res.json(temp);
+    }).catch(function (e) {
+        res.status(400).send(e.message);
     });
-}
-;
-/*
-async function printAll(){
-    await People.findAll({
-        attributes : ['name','hobby'],
-        raw : true
-    }).then(result =>{
-        console.log(result)
-        return result;
-    }).catch(e=>{
-        throw(e);
+}));
+app.get('/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+}));
+app.post('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const newPeople = yield friend_1.default.create({
+        name: body.name,
+        hobby: body.hobby
+    }).then(function () {
+        console.log(arguments);
+        res.json({ ok: true });
+    }).catch(function (e) {
+        res.status(400).send(e.message);
     });
-}
-*/
-function allPeople() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let temp = yield friend_1.default.findAll({
-            attributes: ['name', 'hobby'],
-            raw: true
-        });
-        console.log(temp);
-        return temp;
+}));
+app.delete('/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield friend_1.default.destroy({ where: { id: req.params.id } })
+        .then(function () {
+        console.log(arguments);
+        res.json({ ok: true });
+    })
+        .catch(function (e) {
+        res.status(400).send(e.message);
     });
-}
-test();
-console.log(allPeople());
+}));
+app.listen(7878, function () {
+    console.log('The server has started on port 7878');
+});
